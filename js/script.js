@@ -1,38 +1,103 @@
-"use strict";
+/* Задание на урок:
 
-const numberOfFilms = prompt("How many movies have you watched?", "");
+1) У нас уже есть рабочее приложение, состоящее из отдельных функций. Представьте, что
+перед вами стоит задача переписать его так, чтобы все функции стали методами объекта personalMovieDB
+Такое случается в реальных продуктах при смене технологий или подхода к архитектуре программы
+
+2) Создать метод toggleVisibleMyDB, который при вызове будет проверять свойство privat. Если оно false - он
+переключает его в true, если true - переключает в false. Протестировать вместе с showMyDB.
+
+3) В методе writeYourGenres запретить пользователю нажать кнопку "отмена" или оставлять пустую строку. 
+Если он это сделал - возвращать его к этому же вопросу. После того, как все жанры введены - 
+при помощи метода forEach вывести в консоль сообщения в таком виде:
+"Любимый жанр #(номер по порядку, начиная с 1) - это (название из массива)"*/
+
+'use strict';
+
+let numberOfFilms;
+
+function start() {
+    numberOfFilms = +prompt('Сколько фильмов вы уже посмотрели?', '');
+
+    while (numberOfFilms == '' || numberOfFilms == null || isNaN(numberOfFilms)) {
+        numberOfFilms = +prompt('Сколько фильмов вы уже посмотрели?', '');
+    }
+}
+
+start();
 
 const personalMovieDB = {
     count: numberOfFilms,
     movies: {},
     actors: {},
     genres: [],
-    private: false
+    privat: false,
+    methods:{
+            rememberMyFilms: 
+                function(){
+                    for (let i = 0; i < 2; i++) {
+                        const a = prompt('Один из последних просмотренных фильмов?', ''),
+                            b = prompt('На сколько оцените его?', '');
+                    
+                        if (a != null && b != null && a != '' && b != '' && a.length < 50) {
+                            personalMovieDB.movies[a] = b;
+                            console.log('done');
+                        } else {
+                            console.log('error');
+                            i--;
+                        }
+                    }
+                },
+
+            detectPersonalLevel:
+                function(){
+                    if (personalMovieDB.count < 10) {
+                        console.log("Просмотрено довольно мало фильмов");
+                    } else if (personalMovieDB.count >= 10 && personalMovieDB.count < 30) {
+                        console.log("Вы классический зритель");
+                    } else if (personalMovieDB.count >= 30) {
+                        console.log("Вы киноман");
+                    } else {
+                        console.log("Произошла ошибка");
+                    }
+                },
+
+            showMyDB:
+                function(hidden){
+                    if (!hidden) {
+                        console.log(personalMovieDB);
+                    }
+                },
+
+            writeYourGenres:
+                function(){
+                    for (let i = 1; i <= 3; i++) {
+                        personalMovieDB.genres[i - 1] = prompt(`Ваш любимый жанр под номером ${i}`);
+                            
+                        if(personalMovieDB.genres[i - 1] == ""){
+                            i--;
+                        }
+                    }
+                    for(let values of personalMovieDB.genres){
+                        console.log(`Любимый жанр ${(personalMovieDB.genres.indexOf(values)) + 1} - это ${values}`);
+                    }
+                   
+                },
+
+            toggleVisibleMyDB:
+                function(){
+                    if (personalMovieDB.privat == true){
+                        personalMovieDB.privat = !personalMovieDB.privat;
+                    }
+                    else{
+                        personalMovieDB.privat = !personalMovieDB.privat;
+                    }
+                }    
+            }
 };
 
-if(personalMovieDB.count < 10 && personalMovieDB.count >= 0){
-    alert("You haven't watched many movies.");
-}else if(personalMovieDB.count >= 10 && personalMovieDB.count <=30){
-    alert("You have watched quite a lot of movies.");
-}else if(personalMovieDB.count > 30){
-    alert("You are a movie addict.");
-}else{
-    alert("An error has occured.");
-}
-
-let lastWatched1 = prompt("What's the last movie you watched?", ""),
-lastWatchedRating1 = prompt("What would you rate it?", "");
-
-let lastWatched2 = prompt("What's the second to last movie you watched?", ""),
-lastWatchedRating2 = prompt("What would you rate it?", "");
-
-
-while((lastWatched1.length < 1 || lastWatched1 > 50) || (lastWatched2.length < 1 || lastWatched2 > 50) ){
-     lastWatched1 = prompt("What's the last movie you watched?", "");
-     lastWatchedRating1 = prompt("What would you rate it?", "");
-
-     lastWatched2 = prompt("What's the second to last movie you watched?", "");
-     lastWatchedRating2 = prompt("What would you rate it?", "");
-}
-
-console.log('All done!');
+// personalMovieDB.methods.rememberMyFilms();
+// personalMovieDB.methods.detectPersonalLevel();
+// personalMovieDB.methods.showMyDB(personalMovieDB.privat);
+personalMovieDB.methods.writeYourGenres();
+// personalMovieDB.methods.toggleVisibleMyDB();
